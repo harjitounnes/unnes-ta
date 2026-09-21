@@ -1,0 +1,223 @@
+%% unnes-ta-sitasi.sty — gaya sitasi dan daftar pustaka
+%%
+%% Sumber aturan: Panduan TA Sarjana dan Diploma UNNES 2024, Bab 9 bagian B (hal. 91-92):
+%%   1. jumlah sitasi mengikuti peraturan UNNES yang berlaku (hal. 91 butir 1);
+%%   2. gaya sitasi dan referensi TIDAK ditetapkan panduan (hal. 92 butir 2);
+%%   3. gaya yang dapat dipakai: APA, IEEE, MLA, Chicago, Harvard, ACS (hal. 92 butir 3);
+%%   4. fakultas/prodi menetapkan gaya yang paling relevan (hal. 92 butir 4);
+%%   5. sitasi wajib dikelola dengan reference management system standar (Mendeley, EndNote,
+%%      Zotero, dll.) — hal. 92 butir 5;
+%%   6. untuk tugas akhir jenis publikasi ilmiah, gaya mengikuti kaidah jurnal tujuan (hal. 92
+%%      butir 6).
+%%
+%% Bentuk DAFTAR PUSTAKA contoh panduan (hal. 95) diukur langsung dari PDF panduan:
+%%   indentasi menggantung 28,3 pt (1 cm), spasi tunggal di dalam satu entri (13,9 pt per baris),
+%%   jarak antarentri 20,0 pt (yaitu 6 pt di atas spasi baris tunggal), judul di tengah kapital.
+%%
+%% Teknis: biblatex/biber tidak tersedia di TeX Live mesin ini -> natbib + bibtex.
+%% Berkas .bst yang tersedia: plain, unsrt, abbrv, alpha, apalike, ieeetr, acm, siam, plainnat,
+%% unsrtnat, abbrvnat, amsplain, amsalpha. Berkas gaya khusus seperti chicago.bst, harvard.bst,
+%% mla.bst, acs.bst, dan IEEEtran.bst TIDAK ada, sehingga presetnya memakai pendekatan terdekat
+%% disertai peringatan. Ganti dengan berkas .bst resmi prodi lewat opsi kelas sitasibst=....
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{unnes-ta-sitasi}[2026/09/20 v0.5 Gaya sitasi & daftar pustaka]
+
+%======================================================================== tabel preset
+% Setiap preset menetapkan:
+%   \unnes@bst       berkas gaya BibTeX yang dipakai
+%   \unnes@natsybib  opsi pemuatan natbib
+%   \unnes@setcite   pengaturan \setcitestyle (kosong = baku natbib)
+%   \unnes@namagaya  nama panjang gaya untuk ringkasan/dokumentasi
+%   \unnes@catat     peringatan kesetaraan gaya (kosong = dianggap setara)
+% Gaya bernomor (IEEE, ACS) tidak bisa memakai sitasi nama-halaman ala MLA.
+\newif\ifunnes@sinumerik
+
+\newcommand{\unnes@sitasi@apa}{%
+  \unnes@sinumerikfalse%
+  \def\unnes@bst{unnes-apalike-apa}%   berkas gaya APA milik template (bst/unnes-apalike-apa.bst)
+  \def\unnes@cadangan{apalike}%        bila berkas itu tidak ditemukan bibtex
+  \def\unnes@natsybib{authoryear,round,semicolon}%
+  \def\unnes@setcite{}%
+  \def\unnes@namagaya{APA (American Psychological Association)}%
+  \def\unnes@catat{berkas gaya APA template memakai apalike.bst yang disesuaikan: pemisah
+    antarpengarang "\\&", tahun dalam kurung, urutan abjad, judul buku/nama jurnal miring, dan DOI
+    https://doi.org/... sudah APA 7. Yang belum sesuai APA 7: edisi ditulis "5 edition" bukan
+    "(5th ed.)", lokasi penerbit masih dicetak (APA 7 menghapusnya), halaman artikel didahului
+    titik dua bukan koma, dan nomor volume tidak dimiringkan}%
+}
+\newcommand{\unnes@sitasi@ieee}{%
+  \unnes@sinumeriktrue%
+  \def\unnes@cadangan{}%
+  \def\unnes@bst{ieeetr}%
+  \def\unnes@natsybib{numbers,square,sort&compress}%
+  \def\unnes@setcite{}%
+  \def\unnes@namagaya{IEEE (Institute of Electrical and Electronics Engineers)}%
+  \def\unnes@catat{ieeetr.bst mendekati IEEE (nomor dalam kurung siku, urut pemunculan) tetapi
+    bukan IEEEtran.bst yang resmi; lampiran dan penulisan nama penulis bisa sedikit berbeda}%
+}
+\newcommand{\unnes@sitasi@mla}{%
+  \unnes@sinumerikfalse%
+  \def\unnes@cadangan{}%
+  \def\unnes@bst{plainnat}%
+  \def\unnes@natsybib{authoryear,round}%
+  \def\unnes@setcite{aysep={ }}%
+  \def\unnes@namagaya{MLA (Modern Language Association)}%
+  \def\unnes@catat{mla.bst tidak tersedia; daftar pustaka memakai plainnat.bst. Untuk sitasi
+    dalam teks gaya MLA (nama penulis dan halaman tanpa tahun) pakai \string\citemla[hal]{kunci}}%
+}
+\newcommand{\unnes@sitasi@chicago}{%
+  \unnes@sinumerikfalse%
+  \def\unnes@cadangan{}%
+  \def\unnes@bst{apalike}%
+  \def\unnes@natsybib{authoryear,round,semicolon}%
+  \def\unnes@setcite{aysep={ }}%
+  \def\unnes@namagaya{Chicago (author-date)}%
+  \def\unnes@catat{chicago.bst tidak tersedia; dipakai apalike.bst dengan bentuk dalam teks
+    (Nama Tahun, halaman). Gaya Chicago catatan-kaki (notes-bibliography) tidak didukung
+    BibTeX biasa}%
+}
+\newcommand{\unnes@sitasi@harvard}{%
+  \unnes@sinumerikfalse%
+  \def\unnes@cadangan{}%
+  \def\unnes@bst{apalike}%
+  \def\unnes@natsybib{authoryear,round,semicolon}%
+  \def\unnes@setcite{aysep={ }}%
+  \def\unnes@namagaya{Harvard}%
+  \def\unnes@catat{harvard.bst tidak tersedia; dipakai apalike.bst dengan bentuk dalam teks
+    (Nama Tahun)}%
+}
+\newcommand{\unnes@sitasi@acs}{%
+  \unnes@sinumeriktrue%
+  \def\unnes@cadangan{}%
+  \def\unnes@bst{unsrt}%
+  \def\unnes@natsybib{numbers,super,sort&compress}%
+  \def\unnes@setcite{}%
+  \def\unnes@namagaya{ACS (American Chemical Society)}%
+  \def\unnes@catat{acs.bst tidak tersedia; daftar pustaka memakai unsrt.bst (bernomor urut
+    pemunculan) dan sitasi dalam teks berupa angka superskrip sesuai kebiasaan ACS}%
+}
+
+\newcommand{\unnes@pasangpreset}[1]{%
+  \@ifundefined{unnes@sitasi@#1}%
+    {\PackageError{unnes-ta-sitasi}{Preset gaya sitasi '#1' tidak dikenal}%
+      {Pilihan yang ada: apa, ieee, mla, chicago, harvard, acs.}}%
+    {\@nameuse{unnes@sitasi@#1}}%
+}
+\unnes@pasangpreset{\unnes@sitasi}
+
+% Nilai awal bila kelas tidak memuat preset apa pun (mis. opsi sitasi dikosongkan).
+\providecommand{\unnes@cadangan}{}
+\providecommand{\unnes@bst}{apalike}
+\providecommand{\unnes@natsybib}{authoryear,round,semicolon}
+\providecommand{\unnes@setcite}{}
+\providecommand{\unnes@namagaya}{APA (American Psychological Association)}
+\providecommand{\unnes@catat}{}
+
+%===================================== penimpaan berkas .bst lewat opsi kelas sitasibst
+\ifdefempty{\unnes@sitasibst}{}{%
+  \def\unnes@bst{\unnes@sitasibst}%
+  \PackageInfo{unnes-ta-sitasi}{berkas gaya BibTeX ditimpa menjadi \unnes@sitasibst\space
+    sesuai opsi kelas sitasibst}%
+}
+
+%=========================================================== pemuatan natbib
+\PassOptionsToPackage{\unnes@natsybib}{natbib}
+\RequirePackage{natbib}
+\ifx\unnes@setcite\@empty\else
+  \expandafter\setcitestyle\expandafter{\unnes@setcite}%
+\fi
+
+% Gaya bernomor: natbib menyetel jarak menggantung dari lebar label ("[1]" ± 19,8 pt), bukan dari
+% \bibhang, sehingga baris lanjutan hanya menjorok 0,7 cm. Panduan hal. 95 memberi contoh
+% menggantung 28,3 pt (1 cm), jadi gaya bernomor disusun ulang: label di margin kiri, teks entri
+% dan baris lanjutan sama-sama menjorok \bibhang (1 cm). \labelsep disesuaikan dengan lebar label
+% agar keduanya bertemu di \bibhang, dengan batas bawah 0,5 em bila labelnya panjang ([100] ...).
+% Catatan: \citet dan \citeauthor juga tidak bermakna pada gaya bernomor (berkas .bbl gaya numerik
+% tidak memuat daftar nama) dan menghasilkan "(author?)"; pakai \cite atau \citep.
+\ifunnes@sinumerik
+  \renewcommand{\NAT@bibsetnum}[1]{%
+    \settowidth{\labelwidth}{\@biblabel{#1}}%
+    \setlength{\labelsep}{\bibhang}%
+    \addtolength{\labelsep}{-\labelwidth}%
+    \ifdim\labelsep<0.5em \setlength{\labelsep}{0.5em}\fi
+    \setlength{\leftmargin}{\labelwidth}%
+    \addtolength{\leftmargin}{\labelsep}%
+    \setlength{\itemindent}{\z@}%
+    \setlength{\itemsep}{\bibsep}%
+    \setlength{\parsep}{\z@}%
+  }%
+\fi
+
+%======================================================== laporan ke pengguna
+\IfFileExists{\unnes@bst.bst}{%
+  \PackageInfo{unnes-ta-sitasi}{gaya sitasi = \unnes@namagaya; berkas gaya = \unnes@bst}%
+}{%
+  \ifx\unnes@cadangan\@empty
+    \PackageWarning{unnes-ta-sitasi}{Berkas gaya BibTeX '\unnes@bst' tidak ditemukan; kompilasi
+      bibliografi akan gagal. Setel opsi kelas sitasibst=<nama.bst> ke berkas gaya yang tersedia
+      (plain, unsrt, abbrv, alpha, apalike, ieeetr, acm, siam, plainnat, unsrtnat, abbrvnat)}%
+  \else
+    \PackageWarning{unnes-ta-sitasi}{Berkas gaya BibTeX '\unnes@bst' tidak ditemukan; dipakai
+      berkas cadangan '\unnes@cadangan'. Untuk gaya APA lengkap, arahkan BSTINPUTS ke direktori
+      bst/ template atau salin unnes-apalike-apa.bst ke direktori berkas utama}%
+    \edef\unnes@bst{\unnes@cadangan}%
+  \fi
+}
+\ifx\unnes@catat\@empty\else
+  \PackageWarning{unnes-ta-sitasi}{Kesetaraan gaya: \unnes@catat}%
+\fi
+
+\AtBeginDocument{%
+  \ifdefstring{\unnes@jenis}{publikasi}{%
+    \PackageInfo{unnes-ta-sitasi}{jenis=publikasi: panduan hal. 92 butir 6 menetapkan gaya
+      sitasi mengikuti kaidah jurnal tujuan; preset sitasi=\unnes@sitasi\space hanya menjadi
+      bawaan dan dapat diganti dengan sitasibst=<berkas gaya jurnal>}%
+  }{}%
+}
+
+%============================================================= DAFTAR PUSTAKA
+% \daftarpustaka{berkas bib tanpa ekstensi}  — mis. \daftarpustaka{referensi/pustaka}
+% Argumen WAJIB (bukan opsi kelas): berkas pustaka selalu ditulis eksplisit supaya tidak ada
+% pustaka bawaan yang salah terbaca.
+% Bentuk mengikuti contoh panduan hal. 95 (menggantung 1 cm, spasi tunggal, antarentri 6 pt).
+% Judul halaman dicetak lewat \bibsection (dipanggil natbib di awal thebibliography), bukan oleh
+% \daftarpustaka, supaya tidak ada halaman kosong dan judul ganda.
+\newcommand{\unnes@bibliografistyle}{\bibliographystyle{\unnes@bst}}
+
+\renewcommand{\bibsection}{%
+  \clearpage
+  \unnesjudulhalaman{DAFTAR PUSTAKA}%
+}
+
+\newcommand{\daftarpustaka}[1]{%
+  \unnes@bibliografistyle
+  \begingroup
+    \setstretch{1.0}%
+    \setlength{\bibhang}{1cm}%        panduan hal. 95: baris lanjutan menjorok 28,3 pt = 1 cm
+    \setlength{\bibsep}{6pt}%         panduan hal. 95: jarak antarentri 20,0 pt
+    \bibliography{#1}%
+  \endgroup
+  \clearpage
+}
+
+% Menuliskan DAFTAR PUSTAKA ke Daftar Isi bila prodi memerlukannya:
+%   \tambahkandaftarisi{DAFTAR PUSTAKA}
+% (disediakan unnes-ta-awal.sty).
+
+%======================================================= bantu gaya sitasi khas
+% Gaya MLA menuliskan nama penulis dan halaman tanpa tahun: (Nama 23).
+% Hanya berlaku pada gaya nama-tahun; pada gaya bernomor (IEEE, ACS) berkas .bbl tidak memuat
+% daftar nama sehingga hasilnya "(author?)".
+\newcommand{\citemla}[2][\@empty]{%
+  \ifunnes@sinumerik
+    \PackageError{unnes-ta-sitasi}{\string\citemla hanya untuk gaya nama-tahun}%
+      {Gaya sitasi yang dipakai bernomor (IEEE atau ACS). Pakai \string\cite\space atau
+       ubah opsi kelas menjadi sitasi=mla, apa, chicago, atau harvard.}%
+  \fi
+  (\citeauthor*{#2}\ifx#1\@empty\else\ #1\fi)%
+}
+% Gaya Chicago/Harvard dengan pemisah antarpenulis:
+%   \citep[23]{kunci} -> (Nama Tahun, 23) dengan aysep dan pemisah sebelum nomor halaman.
+% Gaya ACS (superskrip) cukup memakai \cite{kunci} karena natbib sudah dimuat dengan opsi super.
+\endinput

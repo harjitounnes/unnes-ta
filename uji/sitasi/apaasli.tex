@@ -1,0 +1,35 @@
+%% Uji gaya sitasi: apaasli — APA memakai apalike.bst bawaan TeX Live (pembanding tanpa berkas template)
+%% Kompilasi: TEXINPUTS=../../:../../bst: BSTINPUTS=../../bst:
+%%            pdflatex apaasli && bibtex apaasli && pdflatex apaasli (2x)
+%% (direktori bst/ harus terjangkau TEXINPUTS untuk pemeriksaan berkas gaya oleh kelas,
+%%  dan BSTINPUTS supaya bibtex menemukan unnes-apalike-apa.bst)
+\documentclass[sitasi=apaasli,logodir=../../logo,logo=logo-placeholder]{unnes-ta}
+
+\identitas{
+  judul    = {Uji Gaya Sitasi apaasli},
+  nama     = {Nama Mahasiswa},
+  nim      = {1234567890},
+  prodi    = {Pendidikan Teknik Informatika},
+  fakultas = {Fakultas Teknik},
+  tahun    = {2026},
+  pembimbinga = {Dr. Pembimbing Satu, M.Kom.},
+}
+
+\begin{document}
+\bagianutama
+
+\chapter{CONTOH SITASI}
+\section{Bentuk Sitasi dalam Teks}
+Penelitian campuran dibahas oleh \citet{creswell2018research} secara mendalam.
+Kajian sebelumnya menegaskan hal yang sama \citep{martin2014write}.
+Pendapat serupa disampaikan pada bagian tertentu \citep[955]{martin2014write}.
+Rujukan bernomor mengikuti \cite{geraldi2017project}.
+Dua sumber lain juga sejalan \citep{febriani2020memahami,shils1993etika}.
+Bentuk MLA diuji tersendiri \citemla[23]{patten2017understanding}.
+Buku metodologi seni dipakai sebagai acuan \citep{rohidi2012research}.
+Regulasi akademik menjadi dasar \citep{permendikbudristek2023} dan
+\citep{unnes2024panduanakademik}.
+
+\daftarpustaka{../../referensi/contoh}
+
+\end{document}

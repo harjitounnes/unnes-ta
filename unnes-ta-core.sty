@@ -1,0 +1,130 @@
+%% unnes-ta-core.sty — aturan halaman dasar Tugas Akhir UNNES
+%% Panduan TA Sarjana dan Diploma UNNES 2024:
+%%   A4, satu kolom, margin kiri 4 cm / kanan 3 cm / atas 3 cm / bawah 3 cm  (hal. 13, 16, 29, 43, 57, 58, 72)
+%%   Times New Roman 12 pt                                                  (hal. 13, 16, 29, 43, 57, 58, 72)
+%%   spasi 1,5 (laporan), 1,15 (proposal), 1,0 (abstrak)                    (hal. 16, 13, 16)
+%%   perataan teks rata kiri-kanan                                          (idem)
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{unnes-ta-core}[2026/09/20 v0.1 Halaman, font, spasi, nomor halaman]
+
+\RequirePackage{etoolbox}
+\RequirePackage{iftex}
+\RequirePackage{geometry}
+\RequirePackage{setspace}
+\RequirePackage{fancyhdr}
+\RequirePackage{microtype}
+% Protrusion dimatikan supaya tepi teks benar-benar berhenti pada margin 4/3/3/3 cm
+% (protrusion mendorong tanda baca ~0,7 mm keluar dari blok teks, sehingga hasil
+% pengukuran margin tidak lagi sama dengan angka panduan).
+\microtypesetup{protrusion=false}
+\RequirePackage{graphicx}
+\RequirePackage[english]{babel}   % indonesian.ldf tidak tersedia di texlive ini;
+                                  % nama bagian berbahasa Indonesia diatur di unnes-ta-bab.sty
+
+%=========================================================== ukuran & margin
+% Diberi nama panjang supaya mudah dirujuk skrip QA dan dokumentasi.
+\newlength{\unnesmarginkiri}  \setlength{\unnesmarginkiri}{4cm}   % panduan: kiri 4 cm
+\newlength{\unnesmarginkanan} \setlength{\unnesmarginkanan}{3cm}  % panduan: kanan 3 cm
+\newlength{\unnesmarginatas}  \setlength{\unnesmarginatas}{3cm}   % panduan: atas 3 cm
+\newlength{\unnesmarginbawah} \setlength{\unnesmarginbawah}{3cm}  % panduan: bawah 3 cm
+\newlength{\unnestolaknomi}   \setlength{\unnestolaknomi}{1.1cm}  % jarak nomor halaman ke tepi bawah (di luar aturan panduan)
+
+\geometry{%
+  a4paper,%
+  left  = \unnesmarginkiri,%
+  right = \unnesmarginkanan,%
+  top   = \unnesmarginatas,%
+  bottom= \unnesmarginbawah,%
+  headsep = 0.6cm,%
+  footskip= \unnestolaknomi%
+}
+\setlength{\parindent}{1cm}
+\setlength{\parskip}{0pt}
+\raggedbottom
+\emergencystretch=2em
+
+%=============================================================== tipe huruf
+% Panduan: Times New Roman 12 pt. Times New Roman tidak selalu terpasang:
+%   pdflatex  -> mathptmx (Nimbus Roman / Times, metrik Times New Roman)
+%   lualatex  -> Times New Roman bila ada, jika tidak TeX Gyre Termes (metrik sama dengan Times);
+%                butuh luaotfload.sty. Bila luaotfload tidak terpasang (mis. TeX Live Debian
+%                tanpa paket texlive-luatex), otomatis kembali ke mathptmx supaya tetap jadi PDF.
+\ifPDFTeX
+  \RequirePackage{mathptmx}
+  \newcommand{\unnesfontdipakai}{mathptmx (Times/Nimbus Roman)}
+\else
+  \IfFileExists{luaotfload.sty}{%
+    \RequirePackage{fontspec}%
+    \IfFontExistsTF{Times New Roman}{%
+      \setmainfont{Times New Roman}%
+      \newcommand{\unnesfontdipakai}{Times New Roman}%
+    }{%
+      \setmainfont{TeX Gyre Termes}%
+      \newcommand{\unnesfontdipakai}{TeX Gyre Termes}%
+    }%
+    \IfFileExists{unicode-math.sty}{%
+      \RequirePackage{unicode-math}%
+      \IfFontExistsTF{TeX Gyre Termes Math}{\setmathfont{TeX Gyre Termes Math}}{}%
+    }{}%
+  }{%
+    \RequirePackage{mathptmx}%
+    \newcommand{\unnesfontdipakai}{mathptmx (Times/Nimbus Roman; luaotfload tidak terpasang)}%
+    \PackageWarning{unnes-ta-core}{luaotfload.sty tidak terpasang sehingga fontspec tidak dapat
+      dipakai; huruf memakai mathptmx (Times/Nimbus Roman) supaya dokumen tetap tercetak. Pasang
+      paket texlive-luatex (berisi luaotfload) bila ingin huruf OpenType, mis. Times New Roman}%
+  }%
+\fi
+
+%===================================================================== spasi
+% Pemetaan spasi menurut mode; bisa ditimpa opsi kelas spasi=<angka>.
+\@namedef{unnes@spasi@laporan}{1.5}
+\@namedef{unnes@spasi@proposal}{1.15}
+\@namedef{unnes@spasi@repositori}{1.5}
+\newcommand{\unnnesspasiabstrak}{1.0}
+
+\ifdefempty{\unnes@spasi}{%
+  \edef\unnesspasidipakai{\csname unnes@spasi@\unnes@mode\endcsname}%
+}{%
+  \edef\unnesspasidipakai{\unnes@spasi}%
+}
+\expandafter\setstretch\expandafter{\unnesspasidipakai}
+
+%============================================== nomor halaman & gaya halaman
+% Nomor halaman: bagian awal = romawi kecil, bagian utama/akhir = angka arab.
+% Posisi (opsi kelas: halaman=bawah|atas) belum diatur panduan; bawaan bawah-tengah.
+\newcommand{\bagianawal}{%
+  \clearpage\pagenumbering{roman}%
+}
+\newcommand{\bagianutama}{%
+  \clearpage\pagenumbering{arabic}%
+}
+\newcommand{\bagianakhir}{%
+  \clearpage\pagenumbering{arabic}%
+}
+
+\fancypagestyle{unnes}{%
+  \fancyhf{}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+  \ifdefstring{\unnes@halaman}{atas}{%
+    \fancyhead[R]{\thepage}%
+  }{%
+    \fancyfoot[C]{\thepage}%
+  }%
+}
+\fancypagestyle{plain}{%  dipakai halaman pertama bab dan halaman ber-\thispagestyle{plain}
+  \fancyhf{}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+  \ifdefstring{\unnes@halaman}{atas}{%
+    \fancyhead[R]{\thepage}%
+  }{%
+    \fancyfoot[C]{\thepage}%
+  }%
+}
+\pagestyle{unnes}
+
+\PackageInfo{unnes-ta-core}{font=\unnesfontdipakai, spasi=\unnesspasidipakai,%
+  margin kiri/\unnesmarginkiri{} kanan/\unnesmarginkanan{} atas/\unnesmarginatas{} bawah/\unnesmarginbawah}
+\endinput

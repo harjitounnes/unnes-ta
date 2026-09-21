@@ -1,0 +1,115 @@
+%% unnes-ta-identitas.sty — metadata identitas penyusun dan tugas akhir
+%% Dipakai oleh sampul, halaman judul, persetujuan, pengesahan, pernyataan, dan abstrak.
+%% Pengisian di dokumen:  \identitas{judul={...}, nama={...}, ...}
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{unnes-ta-identitas}[2026/09/20 v0.1 Metadata identitas TA]
+
+\RequirePackage{etoolbox}
+\RequirePackage{keyval}
+
+%================================================================= kunci data
+% Setiap kunci langsung diberi nilai awal kosong supaya \unnesid{kunci} tidak pernah
+% menghasilkan "Undefined control sequence" walaupun pengguna belum mengisinya.
+\def\unnes@id@buat#1{%
+  \define@key{unnesid}{#1}{\@namedef{unnes@id@#1}{##1}}%
+  \@namedef{unnes@id@#1}{}%
+}
+
+\unnes@id@buat{judul}          % judul tugas akhir (huruf kapital di sampul)
+\unnes@id@buat{nama}           % nama mahasiswa
+\unnes@id@buat{nim}            % NIM
+\unnes@id@buat{prodi}          % nama program studi
+\unnes@id@buat{fakultas}       % nama fakultas
+\unnes@id@buat{gelar}          % gelar pada sampul, mis. {Sarjana Pendidikan}
+\unnes@id@buat{kota}           % kota pada sampul (bawaan Semarang)
+\unnes@id@buat{tahun}          % tahun pengesahan
+\unnes@id@buat{pembimbinga}    % pembimbing 1: nama lengkap + gelar
+\unnes@id@buat{pembimbinganip}
+\unnes@id@buat{pembimbingb}    % pembimbing 2 (kosongkan bila tunggal)
+\unnes@id@buat{pembimbingbnip}
+\unnes@id@buat{ketua}          % tim penguji: ketua (Dekan/WD/Kalab)
+\unnes@id@buat{ketuanip}
+\unnes@id@buat{sekretaris}     % tim penguji: sekretaris (Koorprodi)
+\unnes@id@buat{sekretarisnip}
+\unnes@id@buat{penguji1}
+\unnes@id@buat{penguji1nip}
+\unnes@id@buat{penguji2}
+\unnes@id@buat{penguji2nip}
+\unnes@id@buat{penguji3}       % terisi hanya pada pola sarjana
+\unnes@id@buat{penguji3nip}
+\unnes@id@buat{tanggalpersetujuan} % teks tanggal pada halaman persetujuan/pengesahan
+\unnes@id@buat{tanggalpernyataan}  % teks tanggal pada halaman pernyataan
+\unnes@id@buat{hari}               % hari ujian, mis. Senin
+\unnes@id@buat{tanggal}            % tanggal ujian, mis. 12 Januari
+\unnes@id@buat{tempatlahir}        % biodata penulis (lampiran)
+\unnes@id@buat{tanggallahir}
+\unnes@id@buat{alamat}
+\unnes@id@buat{surel}
+
+%================================================================== nilai awal
+\@namedef{unnes@id@judul}{JUDUL TUGAS AKHIR}
+\@namedef{unnes@id@nama}{Nama Mahasiswa}
+\@namedef{unnes@id@nim}{0000000000}
+\@namedef{unnes@id@prodi}{Program Studi}
+\@namedef{unnes@id@fakultas}{Fakultas}
+\@namedef{unnes@id@gelar}{Sarjana}
+\@namedef{unnes@id@kota}{Semarang}
+\@namedef{unnes@id@tahun}{\the\year}
+% Bawaan tanggal = tahun saja, karena halaman persetujuan/pernyataan/prakata sudah mencetak
+% nama kota di depannya ("Semarang, 2026"). Isi kunci ini dengan tanggal lengkap bila perlu,
+% misalnya tanggalpersetujuan={10 Januari 2026}.
+\@namedef{unnes@id@tanggalpersetujuan}{\unnes@id@tahun}
+\@namedef{unnes@id@tanggalpernyataan}{\unnes@id@tahun}
+
+%=================================================================== pemakaian
+\newcommand{\identitas}[1]{\setkeys{unnesid}{#1}}
+\newcommand{\unnesid}[1]{\@nameuse{unnes@id@#1}}
+
+\newcommand{\unnesjudul}{\unnesid{judul}}
+\newcommand{\unnesnama}{\unnesid{nama}}
+\newcommand{\unnesnim}{\unnesid{nim}}
+\newcommand{\unnesprodi}{\unnesid{prodi}}
+\newcommand{\unnesfakultas}{\unnesid{fakultas}}
+\newcommand{\unnesgelar}{\unnesid{gelar}}
+\newcommand{\unneskota}{\unnesid{kota}}
+\newcommand{\unnestahun}{\unnesid{tahun}}
+
+% Pembimbing kedua dianggap ada bila namanya diisi (panduan hal. 8, 9).
+% Catatan: JANGAN memakai \ifdefempty{\unnesid{pembimbingb}} — etoolbox mengambil satu token
+% (\unnesid) sebagai argumen sehingga "{pembimbingb}" tercetak sebagai teks di halaman pertama.
+\newif\ifunnespembimbingdua
+\AtBeginDocument{%
+  \ifcsempty{unnes@id@pembimbingb}{\unnespembimbingduafalse}{\unnespembimbingduatrue}%
+  \ifdefstring{\unnes@jenjang}{diploma}{%
+    \PackageInfo{unnes-ta}{jenjang=diploma: tim penguji memakai pola diploma
+      (Ketua, Sekretaris, Penguji 1, Pembimbing) sesuai panduan hal. 10}%
+  }{}%
+}
+
+%============================================ istilah jenis TA (panduan hal. 1-5)
+% Tabel nama memakai \csname agar perintahnya dapat diekspansi penuh dengan \edef
+% (dipakai untuk metadata PDF di unnes-ta.cls). \ifdefstring TIDAK dapat diekspansi
+% sehingga menimbulkan peringatan hyperref "Token not allowed in a PDF string".
+\@namedef{unnes@namajenis@skripsi}{Skripsi}
+\@namedef{unnes@namajenis@proyek}{Proyek}
+\@namedef{unnes@namajenis@prototipe}{Prototipe}
+\@namedef{unnes@namajenis@publikasi}{Publikasi Ilmiah}
+\@namedef{unnes@namajenis@prestasi}{Penyetaraan Prestasi Kejuaraan}
+
+\newcommand{\unnesnamajenis}{\@nameuse{unnes@namajenis@\unnes@jenis}}
+
+% Label yang tercetak di sampul (panduan hal. 21, 35, 49, 64, 77).
+\@namedef{unnes@labelta@skripsi-proposal}{Proposal Skripsi}
+\@namedef{unnes@labelta@skripsi-laporan}{Skripsi}
+\@namedef{unnes@labelta@proyek-proposal}{Proposal Proyek}
+\@namedef{unnes@labelta@proyek-laporan}{Proyek}
+\@namedef{unnes@labelta@prototipe-proposal}{Proposal Prototipe}
+\@namedef{unnes@labelta@prototipe-laporan}{Prototipe}
+\@namedef{unnes@labelta@publikasi-proposal}{Proposal Artikel Ilmiah}
+\@namedef{unnes@labelta@publikasi-laporan}{Publikasi Ilmiah}
+\@namedef{unnes@labelta@publikasi-repositori}{Publikasi Ilmiah}
+\@namedef{unnes@labelta@prestasi-laporan}{Penyetaraan Prestasi Kejuaraan}
+
+\newcommand{\unneslabelta}{\@nameuse{unnes@labelta@\unnes@jenis-\unnes@mode}}
+\endinput

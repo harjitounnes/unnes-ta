@@ -1,0 +1,35 @@
+%% Uji gaya sitasi: acs — ACS (hal. 92 butir 3f)
+%% Kompilasi: TEXINPUTS=../../:../../bst: BSTINPUTS=../../bst:
+%%            pdflatex acs && bibtex acs && pdflatex acs (2x)
+%% (direktori bst/ harus terjangkau TEXINPUTS untuk pemeriksaan berkas gaya oleh kelas,
+%%  dan BSTINPUTS supaya bibtex menemukan unnes-apalike-apa.bst)
+\documentclass[sitasi=acs,logodir=../../logo,logo=logo-placeholder]{unnes-ta}
+
+\identitas{
+  judul    = {Uji Gaya Sitasi acs},
+  nama     = {Nama Mahasiswa},
+  nim      = {1234567890},
+  prodi    = {Pendidikan Teknik Informatika},
+  fakultas = {Fakultas Teknik},
+  tahun    = {2026},
+  pembimbinga = {Dr. Pembimbing Satu, M.Kom.},
+}
+
+\begin{document}
+\bagianutama
+
+\chapter{CONTOH SITASI}
+\section{Bentuk Sitasi dalam Teks}
+Penelitian campuran dibahas pada \cite{creswell2018research} secara mendalam.
+Kajian sebelumnya menegaskan hal yang sama \citep{martin2014write}.
+Pendapat serupa disampaikan pada bagian tertentu \citep[955]{martin2014write}.
+Rujukan bernomor mengikuti \cite{geraldi2017project}.
+Dua sumber lain juga sejalan \citep{febriani2020memahami,shils1993etika}.
+Perintah \texttt{citemla} sengaja tidak dipakai di gaya bernomor karena berkas gaya IEEE/ACS tidak memuat daftar nama penulis; kelas akan menolaknya.
+Buku metodologi seni dipakai sebagai acuan \citep{rohidi2012research}.
+Regulasi akademik menjadi dasar \citep{permendikbudristek2023} dan
+\citep{unnes2024panduanakademik}.
+
+\daftarpustaka{../../referensi/contoh}
+
+\end{document}

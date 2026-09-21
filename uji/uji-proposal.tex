@@ -1,0 +1,27 @@
+%% Uji opsi mode=proposal: memastikan spasi berubah ke 1,15 dan label jenis TA berbeda.
+%% Kompilasi: pdflatex -interaction=nonstopmode uji-proposal.tex  (2x)
+\documentclass[jenis=prototipe,mode=proposal,jenjang=diploma,sitasi=ieee,logo=logo-placeholder]{unnes-ta}
+
+\identitas{
+  judul    = {PENGUJIAN MODE PROPOSAL},
+  nama     = {Nama Mahasiswa},
+  nim      = {1234567890},
+  prodi    = {Teknik Elektronika},
+  fakultas = {Fakultas Teknik},
+  gelar    = {Diploma Tiga},
+  tahun    = {2026},
+}
+
+\begin{document}
+\bagianawal
+\chapter*{UJI MODE PROPOSAL}
+Halaman ini memakai mode proposal sehingga jarak barisnya 1,15 spasi.
+
+\bagianutama
+\chapter{PENDAHULUAN}
+\section{Latarbelakang}
+Uji spasi proposal. Baris ini panjang dengan sengaja supaya jarak antarbaris dapat diukur
+secara terprogram dari koordinat teks pada berkas PDF hasil kompilasi, sehingga perbedaan
+1,5 spasi dan 1,15 spasi dapat dibuktikan secara objektif, bukan hanya dilihat mata.
+Kata \textit{longtable} dan table istilah asing diuji agar pemenggalan kata terlihat.
+\end{document}

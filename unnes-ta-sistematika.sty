@@ -1,0 +1,288 @@
+%% unnes-ta-sistematika.sty — kerangka bab dan subbab per jenis tugas akhir
+%% Sumber sistematika (Panduan TA Sarjana dan Diploma UNNES 2024):
+%%   skripsi            : proposal hal. 14-16, laporan hal. 16-18
+%%   proyek             : proposal hal. 29-31, laporan hal. 31-32
+%%   prototipe          : proposal hal. 43-45, laporan hal. 45-46
+%%   publikasi ilmiah   : proposal hal. 57-58, laporan hal. 58, versi repositori hal. 59
+%%   penyetaraan        : laporan hal. 72-74 (tidak perlu proposal, hal. 8)
+%%
+%% Pemakaian di dokumen:
+%%   \sistematika                      % otomatis memilih sesuai opsi kelas jenis=... mode=...
+%%   \sistematikaskripsi               % atau panggil jenis tertentu langsung
+%%
+%% Subbab bertanda "bila ada" pada panduan dicetak hanya jika diaktifkan, dengan opsi kelas
+%% opsional (semua sekaligus) atau saklar per subbab:
+%%   \documentclass[opsional]{unnes-ta}      % seluruh subbab "bila ada" ikut dicetak
+%%   \unnesopskerangkaberpikirtrue           % hanya subbab ini yang diaktifkan
+%% Catatan panduan di bawah setiap judul dapat dimatikan dengan opsi kelas catatan=false
+%% atau perintah \unnescatatanfalse.
+%%
+%% Penyimpangan yang disengaja dari panduan (dan alasannya):
+%%   1. Nomor subbab mengikuti penomoran otomatis LaTeX. Panduan menulis daftar subbab proposal
+%%      publikasi sebagai 1.1, 1.2, 1.4, 1.5, 1.6 (tanpa 1.3), laporan proyek sebagai 2.3/2.4,
+%%      dan laporan prototipe sebagai 2.5/2.6; nomor itu tidak diteruskan agar tidak ada lompatan.
+%%   2. Penyetaraan prestasi pada panduan hal. 73 menomori bab terakhir sebagai "BAB III" padahal
+%%      itu bab keempat; template memakai BAB 4.
+%%   3. Ejaan judul subbab diseragamkan ("Latar Belakang", "Rumusan Masalah") karena panduan
+%%      menulis sebagian dengan huruf kecil ("Latarbelakang", "Rumusan masalah").
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{unnes-ta-sistematika}[2026/09/20 v0.4 Kerangka bab per jenis TA]
+
+\RequirePackage{etoolbox}
+
+%===================================================== saklar subbab "bila ada"
+\newif\ifunnesopsbatasanmasalah
+\newif\ifunnesopskerangkaberpikir
+\newif\ifunnesopshipotesisteoretis
+\newif\ifunnesopsvariabel
+\newif\ifunnesopshipotesisstatistik
+\newif\ifunnesopsetika
+
+% \unnesops{nama}{kode} — mencetak kode bila opsi kelas opsional aktif ATAU saklar nama aktif.
+% Pengecekan saklar dipisah ke makro sendiri supaya pasangan \if...\else\fi selalu berimbang:
+% menaruh \@nameuse{if...} langsung di cabang \else membuat \fi berlebih (Extra \fi).
+\newcommand{\unnesopscek}[2]{\@nameuse{ifunnesops#1}#2\else\fi}
+\newcommand{\unnesops}[2]{%
+  \ifunnesopsional
+    #2%
+  \else
+    \unnesopscek{#1}{#2}%
+  \fi
+}
+
+%=================================================================== catatan panduan
+% Catatan pengarah di bawah judul subbab; hilang dengan opsi kelas catatan=false.
+\newcommand{\unnescatatan}[1]{%
+  \ifunnescatatan
+    \par\vspace{-0.3\baselineskip}%
+    \begingroup\setstretch{1.0}\footnotesize\itshape
+      \noindent\hspace*{0.8cm}\parbox{\dimexpr\textwidth-1.6cm\relax}{\raggedright #1}%
+    \par\endgroup
+    \vspace{0.3\baselineskip}%
+  \fi
+}
+
+%========================================================================= SKRIPSI
+\newcommand{\sistematikaskripsi}{%
+  %--------------------------------------------------------------- BAB 1 (hal. 14-15)
+  \chapter{PENDAHULUAN}
+  \section{Latar Belakang}
+  \unnescatatan{Panduan hal. 14: alasan mengapa masalah menarik, penting, dan perlu diteliti;
+    kemukakan fenomena nyata, penelitian terdahulu, kesenjangan, dan state of the art.}
+  \unnesops{batasanmasalah}{%
+    \section{Batasan Masalah}
+    \unnescatatan{Panduan hal. 14: batasan masalah (bila ada).}}
+  \section{Rumusan Masalah}
+  \unnescatatan{Panduan hal. 14: rumusan masalah ditulis singkat, padat, dan sistematis.}
+  \section{Tujuan Penelitian}
+  \unnescatatan{Panduan hal. 14-15: menyatakan upaya penyelesaian masalah (mengetahui,
+    menganalisis, menghitung, memastikan parameter). Tujuan harus terjawab di abstrak,
+    pembahasan, dan simpulan.}
+  \section{Manfaat Penelitian}
+  \unnescatatan{Panduan hal. 15: faedah teoretis dan praktis dari hasil penelitian.}
+  \section{Kebaruan Penelitian}
+  \unnescatatan{Panduan hal. 15: perbedaan dan/atau perbaikan dibanding penelitian terdahulu
+    (konsep, konteks, metode, ilmu dan teknologi).}
+  %----------------------------------------------------------------- BAB 2 (hal. 15)
+  \chapter{KAJIAN PUSTAKA}
+  \section{Tinjauan Pustaka}
+  \unnescatatan{Panduan hal. 15: rangkaian hasil penelitian lain yang menjadi landasan
+    penelitian, bukan sekadar kumpulan hasil penelitian.}
+  \section{Landasan Teoretik}
+  \unnescatatan{Panduan hal. 15: konstruksi teori atau konsep yang mendasari pembahasan.}
+  \unnesops{kerangkaberpikir}{%
+    \section{Kerangka Berpikir}
+    \unnescatatan{Panduan hal. 15: kerangka berpikir (bila ada).}}
+  \unnesops{hipotesisteoretis}{%
+    \section{Hipotesis Teoretis}
+    \unnescatatan{Panduan hal. 15: hipotesis teoretis (bila ada).}}
+  %----------------------------------------------------------------- BAB 3 (hal. 15-16)
+  \chapter{METODE PENELITIAN}
+  \section{Pendekatan, Jenis, dan Prosedur Penelitian}
+  \unnescatatan{Panduan hal. 15-16: sertakan desain penelitian, tahapan, prosedur, luaran,
+    dan indikator capaian yang terukur.}
+  \section{Lokasi dan Waktu Penelitian}
+  \section{Subjek Penelitian/Sampel dan Populasi}
+  \unnesops{variabel}{%
+    \section{Variabel Penelitian dan Definisi Operasional}
+    \unnescatatan{Panduan hal. 16: variabel penelitian dan definisi operasional (bila ada).}}
+  \unnesops{hipotesisstatistik}{%
+    \section{Hipotesis Statistik}
+    \unnescatatan{Panduan hal. 16: hipotesis statistik (bila ada).}}
+  \section{Data dan Sumber Data}
+  \section{Teknik Pengumpulan Data}
+  \unnescatatan{Panduan hal. 16: untuk metode survei lampirkan kuesioner lengkap sebagai lampiran.}
+  \section{Teknik Keabsahan Data}
+  \section{Teknik Analisis Data}
+  \unnesops{etika}{%
+    \section{Etika Penelitian}
+    \unnescatatan{Panduan hal. 16: etika penelitian (bila ada).}}
+  %------------------------------------------ laporan: BAB 4 dan BAB 5 (hal. 18)
+  \ifunneslaporan
+    \chapter{HASIL DAN PEMBAHASAN}
+    \unnescatatan{Panduan hal. 18: sajikan data hasil penelitian lalu bahas dengan teori yang
+      digunakan; tabel dan gambar harus berurutan penampilannya (hal. 90-91).}
+    \chapter{PENUTUP}
+    \section{Simpulan}
+    \unnescatatan{Panduan hal. 5.1: jawaban atas tujuan penelitian.}
+    \section{Saran}
+    \unnescatatan{Panduan hal. 5.2: saran bagi pihak terkait dan penelitian lanjutan.}
+  \fi
+}
+
+%========================================================================== PROYEK
+\newcommand{\sistematikaproyek}{%
+  %--------------------------------------------------------------- BAB 1 (hal. 30)
+  \chapter{PENDAHULUAN}
+  \section{Gambaran Umum Masyarakat Sasaran}
+  \unnescatatan{Panduan hal. 30: profil masyarakat sasaran dan alasan proyek perlu dilakukan.}
+  \section{Permasalahan}
+  \unnescatatan{Panduan hal. 30: permasalahan yang dihadapi masyarakat sasaran.}
+  \section{Solusi Pemecahan Masalah}
+  \unnescatatan{Panduan hal. 30: solusi yang ditawarkan beserta keunggulan dan kelemahannya.}
+  \section{Tujuan Proyek}
+  \section{Kontribusi Proyek bagi Masyarakat Sasaran}
+  \unnescatatan{Panduan hal. 30: faedah yang diharapkan dari proyek yang dilaksanakan.}
+  %--------------------------------------------------------------- BAB 2 (hal. 30-31)
+  \chapter{KAJIAN PUSTAKA}
+  \section{Tinjauan Pustaka}
+  \unnescatatan{Panduan hal. 31: temuan penelitian atau proyek lain dari artikel, laporan
+    kegiatan, buku, dan sumber terpercaya lainnya.}
+  \section{Landasan Teoretik}
+  %--------------------------------------------------------------- BAB 3 (hal. 31)
+  \chapter{METODE PELAKSANAAN}
+  \section{Pendekatan Pelaksanaan Proyek}
+  \section{Lokasi dan Waktu Pelaksanaan}
+  \section{Mitra yang Terlibat}
+  \unnescatatan{Panduan hal. 28 dan 31: proyek wajib memiliki mitra kegiatan; lampirkan
+    pernyataan kesediaan mitra (hal. 31).}
+  \section{Prosedur Pelaksanaan Proyek}
+  \section{Penerapan IPTEKS}
+  \section{Teknik Monitoring dan Evaluasi Proyek}
+  \unnescatatan{Panduan hal. 31: sertakan indikator capaian yang terukur di setiap tahapan.}
+  %------------------------------------------ laporan: BAB 4 dan BAB 5 (hal. 32)
+  \ifunneslaporan
+    \chapter{HASIL DAN PEMBAHASAN}
+    \chapter{PENUTUP}
+    \section{Simpulan}
+    \section{Saran}
+  \fi
+}
+
+%======================================================================== PROTOTIPE
+\newcommand{\sistematikaprototipe}{%
+  %--------------------------------------------------------------- BAB 1 (hal. 44)
+  \chapter{PENDAHULUAN}
+  \section{Latar Belakang}
+  \unnescatatan{Panduan hal. 44: urgensi perancangan prototipe, fenomena atau persoalan yang
+    menjadi alasan, bila perlu dikuatkan literatur atau data pendukung.}
+  \section{Rumusan Masalah}
+  \unnescatatan{Panduan hal. 44: dapat berupa pernyataan atau kalimat tanya.}
+  \section{Tujuan Prototipe}
+  \section{Manfaat Prototipe}
+  \unnescatatan{Panduan hal. 44: manfaat nyata dari perancangan prototipe.}
+  \section{Potensi Dampak Fungsional/Komersial}
+  \unnescatatan{Panduan hal. 44: potensi dampak penerapan atau dampak komersial prototipe.}
+  %--------------------------------------------------------------- BAB 2 (hal. 44)
+  \chapter{KAJIAN PUSTAKA}
+  \section{Tinjauan Pustaka}
+  \unnescatatan{Panduan hal. 44: literatur prototipe terdahulu sebagai acuan perancangan.}
+  \section{Landasan Teoretik}
+  %--------------------------------------------------------------- BAB 3 (hal. 44-45)
+  \chapter{METODE PELAKSANAAN}
+  \section{Pendekatan Perancangan}
+  \section{Lokasi dan Waktu}
+  \section{Prosedur Perancangan}
+  \section{Teknik Perancangan}
+  \section{Teknik Uji Kelayakan Hasil}
+  \unnescatatan{Panduan hal. 44-45: sertakan indikator capaian yang terukur di setiap tahapan.}
+  %------------------------------------------ laporan: BAB 4 dan BAB 5 (hal. 46)
+  \ifunneslaporan
+    \chapter{HASIL DAN PEMBAHASAN}
+    \chapter{PENUTUP}
+    \section{Simpulan}
+    \section{Saran}
+  \fi
+}
+
+%================================================================ PUBLIKASI ILMIAH
+\newcommand{\sistematikapublikasi}{%
+  \ifunnesrepositori
+    %---------------------------------------- versi repositori perpustakaan (hal. 59)
+    \chapter{TAUTAN DAN KETERANGAN PUBLIKASI}
+    \unnescatatan{Panduan hal. 59: naskah untuk repositori UNNES dikirim TANPA mencantumkan isi
+      artikel. Isi bagian ini hanya tautan dan keterangan penerbitan.}
+    \section{Tautan Homepage Jurnal}
+    \unnescatatan{Panduan hal. 59: tautan (a) homepage jurnal dan (b) URL artikel bagi artikel
+      yang sudah terbit.}
+    \section{Keterangan Acceptance}
+    \unnescatatan{Panduan hal. 59: nama jurnal, tautan homepage jurnal, keterangan volume, nomor,
+      tahun akan terbit, dan bukti accepted (LoA). Bagian ini dikosongkan bila artikel sudah terbit.}
+  \else
+    \ifunnesproposal
+      %------------------------------------------- proposal artikel ilmiah (hal. 57-58)
+      \chapter{PENDAHULUAN}
+      \section{Latar Belakang}
+      \section{Rumusan Masalah}
+      \unnescatatan{Panduan hal. 57: research question ditulis singkat, padat, dan sistematis.
+        Panduan menomori subbab ini 1.2 lalu melompat ke 1.4, 1.5, dan 1.6 (tanpa 1.3);
+        template memakai penomoran berurutan.}
+      \section{Tujuan}
+      \unnescatatan{Panduan hal. 57: pastikan tujuan terjawab di abstrak, pembahasan, dan simpulan.}
+      \section{Manfaat}
+      \section{Kebaruan}
+      \chapter{TINJAUAN PUSTAKA}
+      \unnescatatan{Panduan hal. 58: petakan dan nilai area penelitian untuk menyadarkan urgensi
+        serta membenarkan pertanyaan ilmiah; utamakan pustaka dari jurnal bereputasi.}
+      \chapter{METODE}
+      \unnescatatan{Panduan hal. 58: subbab pada bab ini ditentukan dosen pembimbing bersama
+        mahasiswa sesuai kebutuhan dan karakteristik studi, sehingga tidak dibakukan template.}
+    \else
+      %--------------------- laporan untuk ujian: naskah artikel jurnal (hal. 58)
+      \chapter{NASKAH ARTIKEL ILMIAH}
+      \unnescatatan{Panduan hal. 58: bagian utama laporan publikasi ilmiah adalah naskah artikel
+        yang telah terbit atau accepted, disusun menurut template manuskrip jurnal tujuan, bukan
+        sistematika bab skripsi. Lampirkan LoA, tautan jurnal, dan bukti korespondensi (hal. 59).}
+    \fi
+  \fi
+}
+
+%==================================================== PENYETARAAN PRESTASI KEJUARAAN
+\newcommand{\sistematikaprestasi}{%
+  \ifunnesproposal
+    \PackageWarning{unnes-ta-sistematika}{Panduan hal. 8: penyetaraan prestasi kejuaraan tidak
+      memerlukan proposal tugas akhir. Sistematika yang dicetak adalah sistematika laporan.}%
+  \fi
+  %--------------------------------------------------------------- BAB 1 (hal. 73)
+  \chapter{PENDAHULUAN}
+  \section{Latar Belakang}
+  \unnescatatan{Panduan hal. 73: alasan atau kondisi yang melatarbelakangi karya tulis ilmiah
+    atau partisipasi pada cabang kejuaraan, dari perspektif bidang ilmu masing-masing.}
+  \section{Tujuan Kegiatan}
+  \section{Manfaat Kegiatan}
+  %--------------------------------------------------------------- BAB 2 (hal. 73)
+  \chapter{LANDASAN TEORETIK}
+  \unnescatatan{Panduan hal. 73: konsep atau teori yang mendasari pembahasan yang relevan dengan
+    cabang kejuaraan yang diikuti.}
+  %--------------------------------------------------------------- BAB 3 (hal. 73)
+  \chapter{METODE PELAKSANAAN KEGIATAN}
+  \section{Strategi yang Dilakukan}
+  \unnescatatan{Panduan hal. 73: strategi saat latihan maupun saat perlombaan, termasuk peran
+    pembimbing dalam kegiatan tersebut.}
+  \section{Waktu dan Tempat Kegiatan}
+  \section{Sarana dan Prasarana Kegiatan}
+  %--------------------------------------------------------------- BAB 4 (hal. 73)
+  \chapter{HASIL KEGIATAN DAN PEMBAHASAN}
+  \unnescatatan{Panduan hal. 73: refleksi terhadap kejuaraan yang sudah diikuti berdasarkan
+    bidang ilmu masing-masing; pembahasan dapat dibagi ke subbab sesuai kebutuhan.}
+}
+
+%========================================================================= pemilih
+\newcommand{\sistematika}{%
+  \ifdefstring{\unnes@jenis}{skripsi}{\sistematikaskripsi}{%
+  \ifdefstring{\unnes@jenis}{proyek}{\sistematikaproyek}{%
+  \ifdefstring{\unnes@jenis}{prototipe}{\sistematikaprototipe}{%
+  \ifdefstring{\unnes@jenis}{publikasi}{\sistematikapublikasi}{%
+  \sistematikaprestasi}}}}}%
+\endinput

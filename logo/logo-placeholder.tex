@@ -1,0 +1,22 @@
+% Placeholder logo — persegi 1:1 berisi penanda teks "UNNES" dan "LOGO 1:1".
+% Berkas ini BUKAN logo resmi UNNES; gunakan sebagai penanda tempat sebelum logo asli dipasang
+% (sampul panduan hal. 21, 35, 49, 64, 77).
+% Hasil: logo-placeholder.pdf berukuran tepat 3cm x 3cm, satu halaman.
+%   pdflatex -jobname=logo-placeholder logo-placeholder.tex
+\documentclass[10pt]{article}
+\usepackage[paperwidth=3cm,paperheight=3cm,margin=0pt]{geometry}
+\usepackage{mathptmx}
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0pt}
+\begin{document}
+\begin{center}
+\vspace*{0.22cm}
+{\bfseries UNNES}\par
+\vspace{0.08cm}
+\rule{1.7cm}{0.4pt}\par
+\vspace{0.08cm}
+{\scriptsize LOGO 1:1}\par
+{\scriptsize bukan logo resmi}
+\end{center}
+\end{document}

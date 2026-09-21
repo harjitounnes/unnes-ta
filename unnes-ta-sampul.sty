@@ -1,0 +1,114 @@
+%% unnes-ta-sampul.sty — sampul luar, halaman judul, dan punggung buku
+%% Panduan TA Sarjana dan Diploma UNNES 2024 (contoh halaman 21, 22, 35, 36, 49, 50, 64, 65, 77):
+%%   JUDUL 14 pt; label jenis TA 14 pt; kalimat "diajukan sebagai salah satu syarat untuk
+%%   memperoleh gelar ..." 12 pt; "oleh / Nama / NIM" 12 pt; nama prodi, fakultas,
+%%   UNIVERSITAS NEGERI SEMARANG, kota dan tahun 12 pt.
+%%   Logo: bawaan template memakai logo UNNES hitam putih (berkas logo-unnes.png) yang memuat
+%%   lambang, tulisan "UNNES", dan "UNIVERSITAS NEGERI SEMARANG"; baris tambahan "Universitas
+%%   Negeri Semarang" di bawah logo dapat dicetak dengan opsi namalogo (bawaan false).
+%%   Panduan hal. 22, 35, 49, 64, 77 meminta logo proporsional P:L = 1:1 "tanpa teks UNNES";
+%%   untuk mengikuti bunyi panduan (lambang saja, P:L = 1:1) letakkan lambang tersebut sebagai
+%%   logo/logo-unnes.png atau logo/logo-unnes.pdf.
+%%   Sampul proposal = soft cover, sampul laporan = hard cover, warna sesuai fakultas.
+%%   Halaman judul berformat identik dengan sampul, dicetak pada kertas putih (hal. 14, 29, 57).
+%% Keputusan template (tidak diatur panduan): sampul memakai spasi tunggal dan tidak mencetak
+%%   nomor halaman (halaman tetap dihitung), lihat README bagian "Keputusan format".
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{unnes-ta-sampul}[2026/09/20 v0.3 Sampul, halaman judul, punggung]
+
+\RequirePackage{etoolbox}
+\RequirePackage{textcase}
+
+%======================================================= ukuran logo dan huruf
+% Logo wajib persegi (P:L = 1:1) dan tanpa teks UNNES.
+\newlength{\unneslogolebar}
+\setlength{\unneslogolebar}{\unnes@ukuranlogo}
+
+% Panduan hal. 21: JUDUL 14 pt, label jenis TA 14 pt, keterangan lain 12 pt.
+\newcommand{\unnesukuranjudul}{\fontsize{14}{17}\selectfont}
+\newcommand{\unnesukuranisi}{\fontsize{12}{15}\selectfont}
+
+%================================================================= tampilan logo
+% Berkas logo boleh berekstensi .pdf (vektor, paling tajam), .png atau .jpg.
+% Catatan: berkas ditemukan/tidak ditandai \newif, bukan dengan membandingkan makro kosong —
+% makro dari \newcommand bersifat \long sehingga \ifx terhadap \@empty selalu SALAH.
+\newif\ifunnesadalogoditemukan
+\newcommand{\unnesberkaslogo}{}
+\newcommand{\unneslogotampil}{%
+  \unnesadalogoditemukanfalse
+  \IfFileExists{\unnes@logodir/\unnes@logo.pdf}%
+    {\unnesadalogoditemukantrue\def\unnesberkaslogo{\unnes@logodir/\unnes@logo.pdf}}{%
+    \IfFileExists{\unnes@logodir/\unnes@logo.png}%
+      {\unnesadalogoditemukantrue\def\unnesberkaslogo{\unnes@logodir/\unnes@logo.png}}{%
+      \IfFileExists{\unnes@logodir/\unnes@logo.jpg}%
+        {\unnesadalogoditemukantrue\def\unnesberkaslogo{\unnes@logodir/\unnes@logo.jpg}}{}}}%
+  \ifunnesadalogoditemukan
+    \includegraphics[width=\unneslogolebar,height=\unneslogolebar,keepaspectratio]{\unnesberkaslogo}%
+  \else
+    \PackageWarning{unnes-ta-sampul}{berkas logo \unnes@logodir/\unnes@logo (pdf/png/jpg) tidak%
+      ditemukan; dipakai kotak placeholder. Lihat logo/README.md}%
+    \fbox{\parbox[c][\dimexpr\unneslogolebar-2\fboxsep-2\fboxrule\relax][c]{\unneslogolebar}%
+      {\centering\scriptsize logo\\\unnes@logo}}%
+  \fi
+}
+
+%=================================================================== halaman sampul
+\newcommand{\unnes@halamansampul}{%
+  \clearpage
+  \thispagestyle{empty}%
+  \begin{spacing}{1.0}%
+    \begin{center}%
+      \unneslogotampil\par
+      \ifunnesnamalogo
+        \vspace{0.35cm}%
+        {\unnesukuranisi Universitas Negeri Semarang\par}%
+      \fi
+      \vspace{1.0cm}%
+      {\unnesukuranjudul\bfseries \MakeTextUppercase{\unnesjudul}\par}%
+      \vspace{0.7cm}%
+      {\unnesukuranjudul\bfseries \unneslabelta\par}%
+      \vspace{0.9cm}%
+      {\unnesukuranisi diajukan sebagai salah satu syarat untuk memperoleh gelar
+        \unnesgelar\par}%
+      \vspace{0.9cm}%
+      {\unnesukuranisi oleh\par}%
+      \vspace{0.5cm}%
+      {\unnesukuranisi \unnesnama\par}%
+      {\unnesukuranisi NIM \unnesnim\par}%
+      \vfill
+      {\unnesukuranisi \MakeTextUppercase{\unnesprodi}\par}%
+      {\unnesukuranisi \MakeTextUppercase{\unnesfakultas}\par}%
+      {\unnesukuranisi UNIVERSITAS NEGERI SEMARANG\par}%
+      {\unnesukuranisi \unneskota, \unnestahun\par}%
+    \end{center}%
+  \end{spacing}%
+  \clearpage
+}
+
+% Sampul luar (soft/hard cover) memakai warna sesuai fakultas; warna diberikan saat cetak,
+% bukan oleh kelas.
+\newcommand{\sampul}{\unnes@halamansampul}
+% Halaman judul: format sama dengan sampul, dicetak pada kertas putih.
+\newcommand{\halamanjudul}{\unnes@halamansampul}
+
+%========================================================================== punggung
+% Punggung buku hanya memuat JUDUL (panduan hal. 23, 37, 51, 66, 78) dan tidak perlu dicetak
+% bila naskah terlalu tipis. Halaman ini disediakan untuk pencetakan cover secara manual.
+\newcommand{\punggung}{%
+  \clearpage
+  \thispagestyle{empty}%
+  \begin{spacing}{1.0}%
+    \vspace*{\fill}%
+    \begin{center}%
+      % Kotak sebelum diputar lebarnya dibatasi \textheight: setelah diputar 90 derajat,
+      % ukuran itu menjadi tinggi teks, sehingga judul panjang tidak meluber ke halaman
+      % berikutnya (judul panjang otomatis terbagi ke beberapa baris).
+      \rotatebox{90}{\parbox[c]{\dimexpr\textheight-1cm\relax}%
+        {\centering\unnesukuranisi\bfseries \MakeTextUppercase{\unnesjudul}}}%
+    \end{center}%
+    \vspace*{\fill}%
+  \end{spacing}%
+  \clearpage
+}
+\endinput

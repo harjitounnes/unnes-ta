@@ -1,0 +1,147 @@
+%% unnes-ta-awal.sty — bagian awal: moto, abstrak, prakata, daftar isi/gambar/tabel/istilah/lampiran
+%% Panduan TA Sarjana dan Diploma UNNES 2024:
+%%   urutan bagian awal laporan hal. 16-17, 31, 45 (gambar dulu, baru tabel);
+%%   urutan bagian awal proposal hal. 30, 44, 57 (tabel dulu, baru gambar);
+%%   abstrak: spasi 1,0 dan memuat judul, nama penulis, nama pembimbing, tujuan penulisan,
+%%   metode, serta substansi hasil/temuan (hal. 16).
+%% Teknis: tocloft tidak tersedia, jadi bentuk Daftar Isi diatur dengan mengganti \l@chapter
+%%   (memberi awalan "BAB n.") dan membuat heading sendiri; Daftar Lampiran membaca berkas .loa
+%%   yang ditulis oleh unnes-ta-lampiran.sty.
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{unnes-ta-awal}[2026/09/20 v0.3 Bagian awal: moto, abstrak, prakata, daftar]
+
+\RequirePackage{etoolbox}
+\RequirePackage{textcase}
+
+%===================================================== bentuk entri Daftar Isi
+% Judul bab dicetak sebagai "BAB 1. PENDAHULUAN ... 1" (panduan hal. ix memakai format itu).
+\renewcommand*{\l@chapter}[2]{%
+  \ifnum \c@tocdepth >\m@ne
+    \addpenalty{-\@highpenalty}%
+    \vskip 0.9em \@plus\p@
+    \setlength\@tempdima{3.4em}%
+    \begingroup
+      \let\unnes@numberline\numberline
+      \def\numberline##1{\unnes@numberline{BAB ##1.}}%
+      \parindent \z@ \rightskip \@pnumwidth \parfillskip -\@pnumwidth
+      \leavevmode \bfseries
+      \MakeTextUppercase{#1}%
+      \nobreak\leaders\hbox{$\m@th\mkern \@dotsep mu\hbox{.}\mkern \@dotsep mu$}%
+        \hfill\nobreak
+      \hb@xt@\@pnumwidth{\hss #2}\par
+      \penalty\@highpenalty
+    \endgroup
+  \fi
+}
+
+%======================================================= bagian awal berdaftar
+% Semua daftar memakai spasi tunggal agar rapi dan hemat halaman.
+\newcommand{\unnes@daftar}[2]{% #1 = judul halaman, #2 = ekstensi berkas daftar
+  \clearpage
+  \unnesjudulhalaman{#1}%
+  \begingroup\setstretch{1.0}\@starttoc{#2}\endgroup
+}
+
+\newcommand{\daftarisi}{\unnes@daftar{DAFTAR ISI}{toc}}
+\newcommand{\daftargambar}{\unnes@daftar{DAFTAR GAMBAR}{lof}}
+\newcommand{\daftartabel}{\unnes@daftar{DAFTAR TABEL}{lot}}
+\newcommand{\daftarlampiran}{\unnes@daftar{DAFTAR LAMPIRAN}{loa}}
+
+% Menambahkan halaman bagian awal (PRAKATA, ABSTRAK, dst.) ke Daftar Isi bila prodi memerlukannya.
+\newcommand{\tambahkandaftarisi}[1]{%
+  \phantomsection\addcontentsline{toc}{chapter}{#1}%
+}
+
+%============================================================ Daftar Istilah/Singkatan
+\newcommand{\daftaristilah}[1]{%
+  \clearpage
+  \unnesjudulhalaman{DAFTAR ISTILAH DAN SINGKATAN}%
+  \begingroup\setstretch{1.0}#1\endgroup
+}
+% Satu entri daftar istilah: \istilah{AR}{Artificial Reality / realitas buatan}
+\newcommand{\istilah}[2]{%
+  \par\noindent
+  \begin{minipage}[t]{3.4cm}\raggedright #1\end{minipage}%
+  \hspace{0.4cm}%
+  \begin{minipage}[t]{8.9cm}\raggedright #2\end{minipage}%
+  \par\vspace{4pt}%
+}
+
+%====================================================================== Moto dan Persembahan
+\newcommand{\motopersembahan}[1]{%
+  \clearpage
+  \unnesjudulhalaman{MOTO DAN PERSEMBAHAN}%
+  #1\par
+}
+
+%============================================================================= Abstrak
+\newcommand{\unnesbarispembimbing}{%
+  \ifunnespembimbingdua
+    Pembimbing I: \unnesid{pembimbinga}; Pembimbing II: \unnesid{pembimbingb}%
+  \else
+    Pembimbing: \unnesid{pembimbinga}%
+  \fi
+}
+\newcommand{\unnesbarispembimbingen}{%
+  \ifunnespembimbingdua
+    Supervisors I: \unnesid{pembimbinga}; II: \unnesid{pembimbingb}%
+  \else
+    Supervisor: \unnesid{pembimbinga}%
+  \fi
+}
+
+% \abstrak[kata kunci]{isi} — isi harus memuat tujuan penulisan, metode, dan hasil/temuan (panduan hal. 16)
+\newcommand{\abstrak}[2][]{%
+  \clearpage
+  \unnesjudulhalaman{ABSTRAK}%
+  \begin{spacing}{1.0}%
+    \begin{center}%
+      \unnesnama. \MakeTextUppercase{\unnesjudul}. \unneslabelta. \unnesprodi,
+      \unnesfakultas, Universitas Negeri Semarang. \unnesbarispembimbing
+    \end{center}%
+    \vspace{0.5cm}%
+    #2\par
+    \ifblank{#1}{}{%
+      \vspace{0.5cm}%
+      \noindent\textbf{Kata kunci:} #1\par
+    }%
+  \end{spacing}%
+}
+
+% \abstracten[keywords]{isi} — versi bahasa Inggris (panduan hal. 17, 31)
+\newcommand{\abstracten}[2][]{%
+  \clearpage
+  \unnesjudulhalaman{ABSTRACT}%
+  \begin{spacing}{1.0}%
+    \begin{center}%
+      \unnesnama. \MakeTextUppercase{\unnesjudul}. \unneslabelta. \unnesprodi,
+      \unnesfakultas, Universitas Negeri Semarang. \unnesbarispembimbingen
+    \end{center}%
+    \vspace{0.5cm}%
+    #2\par
+    \ifblank{#1}{}{%
+      \vspace{0.5cm}%
+      \noindent\textbf{Keywords:} #1\par
+    }%
+  \end{spacing}%
+}
+
+%=============================================================================== Prakata
+% Isi prakata dalam environment, tanda tangan dipisah supaya bisa disesuaikan sendiri.
+\newenvironment{prakata}{%
+  \clearpage
+  \unnesjudulhalaman{PRAKATA}%
+}{%
+  \par
+}
+% Tanda tangan penutup prakata: "\tandatanganprakata{Penulis}" atau "\tandatanganprakata{}"
+\newcommand{\tandatanganprakata}[1]{%
+  \vspace{1.0cm}%
+  \begin{flushright}%
+    \unneskota, \unnesid{tanggalpernyataan}\par
+    \vspace{0.3cm}%
+    #1\par
+  \end{flushright}%
+}
+\endinput

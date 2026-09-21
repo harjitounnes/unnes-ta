@@ -1,0 +1,132 @@
+%% unnes-ta-pengesahan.sty — persetujuan pembimbing, pengesahan tim penguji, pernyataan keaslian
+%% Panduan TA Sarjana dan Diploma UNNES 2024:
+%%   PERSETUJUAN PEMBIMBING                  hal. 24, 38, 52, 67, 79
+%%   PENGESAHAN PENGUJI (tim penguji)        hal. 25, 39, 53, 68, 80
+%%   komposisi tim penguji diploma / sarjana hal. 10 (F.5 dan F.6)
+%%   PERNYATAAN keaslian bermaterai 10.000   hal. 26, 40, 54, 69, 81
+%% Kalimat "… berjudul … yang disusun oleh" memakai nama jenis TA dari \unnesnamajenis.
+%% Keputusan template (tidak diatur panduan): label kolom identitas memakai huruf kapital
+%%   awal (Nama, NIM, Prodi/Fakultas) dan halaman pernyataan memakai kotak materai 3 cm.
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{unnes-ta-pengesahan}[2026/09/20 v0.3 Persetujuan, pengesahan, pernyataan]
+
+\RequirePackage{etoolbox}
+\RequirePackage{textcase}
+
+%================================================ tujuan pengajuan (proposal/ujian)
+% Contoh panduan (hal. 24, 38, 52, 67, 79): "… telah disetujui untuk diajukan ke
+% penilaian proposal/ujian skripsi." → proposal memakai "penilaian proposal",
+% laporan memakai "ujian <nama jenis TA>".
+\newcommand{\unnestujuanujian}{%
+  \ifunnesproposal penilaian proposal\else ujian \unnesnamajenis\fi
+}
+
+%================================================= blok identitas penyusun (tabel)
+\newcommand{\unnesblokidentitas}{%
+  \begin{center}%
+    \begin{tabular}{@{}l@{\hspace{4pt}}c@{\hspace{4pt}}l@{}}%
+      Nama           & : & \unnesnama \\
+      NIM            & : & \unnesnim \\
+      Prodi/Fakultas & : & \unnesprodi/\unnesfakultas \\
+    \end{tabular}%
+  \end{center}%
+}
+
+%===================================== nama/NIP penguji yang merangkap pembimbing
+% Panduan hal. 10: penguji yang merangkap pembimbing adalah Penguji 2 pada jenjang diploma dan
+% Penguji 3 pada jenjang sarjana. Bila kuncinya belum diisi, dipakai data pembimbing 1.
+\newcommand{\unnes@isipengujipembimbing}[1]{% #1 = {nama} (kosong) atau {nip}
+  \ifunnesdiploma
+    \ifcsempty{unnes@id@penguji2#1}%
+      {\@nameuse{unnes@id@pembimbinga#1}}{\@nameuse{unnes@id@penguji2#1}}%
+  \else
+    \ifcsempty{unnes@id@penguji3#1}%
+      {\@nameuse{unnes@id@pembimbinga#1}}{\@nameuse{unnes@id@penguji3#1}}%
+  \fi
+}
+
+%===================================================================== persetujuan
+\newcommand{\persetujuanpembimbing}{%
+  \clearpage
+  \unnesjudulhalaman{PERSETUJUAN PEMBIMBING}%
+  \noindent\unnesnamajenis{} berjudul ``\unnesjudul'' yang disusun oleh:\par
+  \vspace{0.4cm}%
+  \unnesblokidentitas
+  \vspace{0.4cm}%
+  \noindent telah disetujui untuk diajukan ke \unnestujuanujian.\par
+  \vspace{1.0cm}%
+  \begin{flushright}%
+    \unneskota, \unnesid{tanggalpersetujuan}\par
+    \vspace{0.4cm}%
+    \ifunnespembimbingdua
+      \begin{tabular}{@{}c@{\hspace{1.8cm}}c@{}}%
+        Pembimbing I & Pembimbing II \\[2.2cm]%
+        \unnesid{pembimbinga} & \unnesid{pembimbingb} \\%
+        NIP \unnesid{pembimbinganip} & NIP \unnesid{pembimbingbnip}%
+      \end{tabular}%
+    \else
+      Pembimbing\par
+      \vspace{2.2cm}%
+      \unnesid{pembimbinga}\par
+      NIP \unnesid{pembimbinganip}\par
+    \fi
+  \end{flushright}%
+}
+
+%======================================================================= pengesahan
+\newcommand{\pengeshantimpenguji}{%
+  \clearpage
+  \unnesjudulhalaman{PENGESAHAN PENGUJI}%
+  \noindent\unnesnamajenis{} berjudul ``\unnesjudul'' yang disusun oleh:\par
+  \vspace{0.4cm}%
+  \unnesblokidentitas
+  \vspace{0.4cm}%
+  \noindent telah dipertahankan dalam ujian \unnesnamajenis{} pada hari \unnesid{hari},
+  tanggal \unnesid{tanggal} \unnestahun.\par
+  \vspace{0.8cm}%
+  \begin{center}%
+    \textbf{Tim Penguji}\par
+    \vspace{0.4cm}%
+    \begin{tabular}{@{}p{4.2cm}@{\hspace{0.4cm}}p{7.6cm}@{}}%
+      Ketua Penguji          & \unnesid{ketua} \\
+                             & NIP \unnesid{ketuanip} \\[0.35cm]%
+      Sekretaris             & \unnesid{sekretaris} \\
+                             & NIP \unnesid{sekretarisnip} \\[0.35cm]%
+      Penguji 1              & \unnesid{penguji1} \\
+                             & NIP \unnesid{penguji1nip} \\[0.35cm]%
+      \ifunnesdiploma
+        Penguji 2/Pembimbing   & \unnes@isipengujipembimbing{}\\
+                               & NIP \unnes@isipengujipembimbing{nip}\\
+      \else
+        Penguji 2              & \unnesid{penguji2} \\
+                               & NIP \unnesid{penguji2nip} \\[0.35cm]%
+        Penguji 3/Pembimbing   & \unnes@isipengujipembimbing{}\\
+                               & NIP \unnes@isipengujipembimbing{nip}\\
+      \fi
+    \end{tabular}%
+  \end{center}%
+}
+
+%===================================================================== pernyataan
+\newcommand{\pernyataankeaslian}{%
+  \clearpage
+  \unnesjudulhalaman{PERNYATAAN}%
+  \noindent\unnesnamajenis{} yang ditulis berjudul ``\unnesjudul'' merupakan karya asli dan
+  bukan hasil plagiasi dari karya orang lain. Pendapat atau temuan orang lain yang dikutip
+  di dalam \MakeLowercase{\unnesnamajenis} ini telah ditulis berdasarkan kode etik ilmiah.
+  Berdasarkan pernyataan ini, saya siap menanggung sanksi hukum apabila ditemukan
+  pelanggaran terhadap integritas akademik dalam karya ini.\par
+  \vspace{1.2cm}%
+  \begin{center}%
+    \unneskota, \unnesid{tanggalpernyataan}\par
+    \vspace{0.3cm}%
+    Yang menyatakan\par
+    \vspace{0.3cm}%
+    \framebox[3cm]{\rule{0pt}{1.6cm}\footnotesize (Materai 10.000)}\par
+    \vspace{0.5cm}%
+    \unnesnama\par
+    NIM \unnesnim\par
+  \end{center}%
+}
+\endinput

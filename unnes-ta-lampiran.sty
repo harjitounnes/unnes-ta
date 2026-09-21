@@ -1,0 +1,136 @@
+%% unnes-ta-lampiran.sty — lampiran bernomor + skeleton lampiran wajib per jenis TA
+%% Panduan TA Sarjana dan Diploma UNNES 2024 (bagian akhir):
+%%   Biodata penulis + SK pembimbing  : semua jenis            hal. 15, 31, 45, 58, 73
+%%   SK penguji                       : laporan                 hal. 17, 31, 45, 58, 74
+%%   Instrumen (kuesioner dsb.)       : proposal skripsi        hal. 15
+%%   Pernyataan kesediaan mitra       : proposal proyek         hal. 31
+%%   Draf karya/sketsa/storyboard     : proposal prototipe      hal. 45
+%%   Luaran HKI, publikasi media      : laporan prototipe       hal. 45-46
+%%   Homepage/identitas jurnal        : proposal publikasi      hal. 58
+%%   URL artikel, LoA, bukti korespondensi, pernyataan komitmen : laporan publikasi hal. 59
+%%   Sertifikat prestasi, bukti media, foto/tautan video        : penyetaraan hal. 74
+%%   Izin etik dan lampiran lain      : bila diperlukan         hal. 17, 59
+%% Keputusan template (tidak diatur panduan): nomor lampiran memakai counter sendiri ("LAMPIRAN 1"),
+%%   sedangkan penomoran tabel/gambar di dalam lampiran tetap mengikuti nomor bab terakhir.
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{unnes-ta-lampiran}[2026/09/20 v0.3 Lampiran dan skeleton lampiran]
+
+\RequirePackage{etoolbox}
+\RequirePackage{textcase}
+\RequirePackage{keyval}
+
+\newcounter{lampiran}
+
+%=================================================================== daftar lampiran
+% Daftar Lampiran dibuat di bagian awal, jadi isinya dibaca dari berkas .loa (butuh 2x kompilasi).
+\newcommand*{\l@lampiran}[2]{%
+  \par\noindent #1\nobreak
+  \leaders\hbox{$\m@th\mkern \@dotsep mu\hbox{.}\mkern \@dotsep mu$}\hfill\nobreak
+  \hb@xt@\@pnumwidth{\hss #2}\par\vspace{2pt}%
+}
+
+%======================================================================== halaman lampiran
+\newcommand{\lampiran}[1]{%
+  \clearpage
+  \refstepcounter{lampiran}%
+  \phantomsection
+  \addcontentsline{loa}{lampiran}{LAMPIRAN \thelampiran{}: #1}%
+  \unnesjudulhalaman{LAMPIRAN \thelampiran}%
+  \begin{center}{\normalsize\bfseries #1\par}\end{center}%
+  \vspace{0.8\baselineskip}%
+}
+
+% Halaman lampiran berisi dokumen yang disisipkan (SK, sertifikat, LoA, tangkapan layar, dsb.)
+\newcommand{\lampiranplaceholder}[2]{%
+  \lampiran{#1}%
+  \noindent #2\par
+  \vspace{0.8cm}%
+  \begin{center}%
+    \fbox{\parbox[c][5.5cm][c]{0.88\textwidth}{\centering\itshape
+      (sisipkan salinan dokumen di sini)}}%
+  \end{center}%
+}
+
+%=========================================== lampiran wajib: dipanggil sesuai kebutuhan jenis TA
+\newcommand{\lampiranskpembimbing}{%
+  \lampiranplaceholder{Lampiran SK Pembimbing}%
+    {Lampiran ini memuat salinan Surat Keputusan Dekan tentang penetapan dosen pembimbing
+     tugas akhir (panduan hal. 15, 31, 45, 58, 73).}}
+\newcommand{\lampiranskpenguji}{%
+  \lampiranplaceholder{Lampiran SK Penguji}%
+    {Lampiran ini memuat salinan Surat Tugas/SK tim penguji dari Dekan (panduan hal. 17, 31, 45, 59).}}
+\newcommand{\lampiraninstrumen}{%
+  \lampiranplaceholder{Lampiran Instrumen Penelitian}%
+    {Lampiran ini memuat instrumen penelitian lengkap, misalnya kuesioner, pedoman wawancara,
+     lembar observasi, atau lembar validasi ahli (panduan hal. 15).}}
+\newcommand{\lampiranmitra}{%
+  \lampiranplaceholder{Lampiran Pernyataan Kesediaan Mitra}%
+    {Lampiran ini memuat pernyataan kesediaan mitra kegiatan (panduan hal. 31).}}
+\newcommand{\lampiransketsa}{%
+  \lampiranplaceholder{Lampiran Draf Karya/Sketsa/Storyboard/Storyline}%
+    {Lampiran ini memuat draf karya, sketsa, storyboard, atau storyline rancangan prototipe
+     (panduan hal. 45).}}
+\newcommand{\lampiranluaranhki}{%
+  \lampiranplaceholder{Lampiran Luaran HKI}%
+    {Lampiran ini memuat bukti pendaftaran atau sertifikat HKI DJKI atas prototipe yang dihasilkan
+     (panduan hal. 45-46).}}
+\newcommand{\lampiranmedia}{%
+  \lampiranplaceholder{Lampiran Publikasi Media Massa/Media Sosial}%
+    {Lampiran ini memuat bukti publikasi kegiatan pada media massa atau media sosial
+     (panduan hal. 31, 45-46).}}
+\newcommand{\lampiranhomepagejurnal}{%
+  \lampiranplaceholder{Lampiran Homepage/Identitas Jurnal}%
+    {Lampiran ini memuat tangkapan layar homepage dan identitas jurnal yang akan dituju
+     (panduan hal. 58).}}
+\newcommand{\lampiranloa}{%
+  \lampiranplaceholder{Lampiran Tautan Jurnal dan Bukti Accepted (LoA)}%
+    {Lampiran ini memuat tautan (a) homepage jurnal dan (b) URL artikel yang telah terbit,
+     atau bukti accepted (Letter of Acceptance) bagi naskah yang belum terbit, disertai keterangan
+     nama jurnal, volume, nomor, dan tahun terbit (panduan hal. 59).}}
+\newcommand{\lampirankorespondensi}{%
+  \lampiranplaceholder{Lampiran Bukti Korespondensi}%
+    {Lampiran ini memuat bukti korespondensi proses submit, notifikasi submit, reviu, revisi,
+     pembayaran, sampai acceptance (panduan hal. 59).}}
+\newcommand{\lampiranpernyataankomitmen}{%
+  \lampiranplaceholder{Lampiran Pernyataan Komitmen (bermaterai 10.000)}%
+    {Lampiran ini memuat pernyataan komitmen menyelesaikan proses korespondensi sampai naskah
+     terbit, diketahui koordinator program studi dan dosen pembimbing (panduan hal. 59).}}
+\newcommand{\lampiranizinetik}{%
+  \lampiranplaceholder{Lampiran Izin Etik}%
+    {Lampiran ini memuat ethical clearance/izin penelitian bila penelitian menggunakan subjek
+     manusia atau hewan (panduan hal. 17, 59).}}
+\newcommand{\lampiranbuktiizinpenelitian}{%
+  \lampiranplaceholder{Lampiran Surat Izin Penelitian}%
+    {Lampiran ini memuat surat izin penelitian dari dekan dan izin dari lembaga/instansi/mitra
+     terkait (panduan hal. 84).}}
+\newcommand{\lampiransertifikatprestasi}{%
+  \lampiranplaceholder{Lampiran Sertifikat Prestasi Kejuaraan}%
+    {Lampiran ini memuat salinan sertifikat prestasi kejuaraan yang disetarakan dengan tugas akhir
+     (panduan hal. 74).}}
+\newcommand{\lampiranpemberitaanmedia}{%
+  \lampiranplaceholder{Lampiran Bukti Pemberitaan dan Dokumentasi Kegiatan}%
+    {Lampiran ini memuat bukti pemberitaan media serta foto atau tautan video kegiatan
+     (panduan hal. 74).}}
+\newcommand{\lampirandokumentasi}{%
+  \lampiranplaceholder{Lampiran Dokumentasi}%
+    {Lampiran ini memuat dokumentasi pelaksanaan kegiatan atau penelitian (panduan hal. 31-32).}}
+
+%========================================================================= biodata penulis
+% \biodatapenulis{isi tambahan: riwayat pendidikan, pengalaman, dsb.}
+\newcommand{\biodatapenulis}[1]{%
+  \lampiran{Biodata Penulis}%
+  \begin{tabular}{@{}l@{\hspace{4pt}}c@{\hspace{4pt}}l@{}}%
+    Nama                 & : & \unnesnama \\
+    NIM                  & : & \unnesnim \\
+    Program Studi        & : & \unnesprodi \\
+    Fakultas             & : & \unnesfakultas \\
+    Tempat, tanggal lahir& : & \unnesid{tempatlahir}, \unnesid{tanggallahir} \\
+    Alamat               & : & \unnesid{alamat} \\
+    Surel                & : & \unnesid{surel} \\
+  \end{tabular}%
+  % \par wajib: tanpa itu teks isi tambahan menyambung pada baris tabel terakhir.
+  \par\vspace{0.8cm}%
+  \noindent #1\par
+}
+\endinput

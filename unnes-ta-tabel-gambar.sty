@@ -1,0 +1,63 @@
+%% unnes-ta-tabel-gambar.sty — aturan tabel, gambar, dan caption
+%% Panduan TA UNNES 2024 hanya menyebut penyajian data lewat "tabel, gambar, atau keduanya"
+%% dan "setiap tabel dan gambar harus sesuai urutan penampilan" (hal. 90-91).
+%% Keputusan desain template (tidak diatur panduan):
+%%   - label "Tabel"/"Gambar" diikuti nomor bab: Tabel 3.1, Gambar 3.1
+%%   - judul tabel di ATAS tabel, judul gambar di BAWAH gambar
+%%   - baris sumber tabel/gambar ditulis dengan \sumber{...}
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{unnes-ta-tabel-gambar}[2026/09/20 v0.1 Tabel, gambar, caption]
+
+\RequirePackage{booktabs}
+\RequirePackage{longtable}   % harus sebelum caption
+\RequirePackage{caption}
+\RequirePackage{graphicx}
+
+%======================================================== penomoran Bab.n
+\makeatletter
+\@addtoreset{table}{chapter}
+\@addtoreset{figure}{chapter}
+\@addtoreset{equation}{chapter}
+\renewcommand{\thetable}{\thechapter.\arabic{table}}
+\renewcommand{\thefigure}{\thechapter.\arabic{figure}}
+\renewcommand{\theequation}{\thechapter.\arabic{equation}}
+\makeatother
+
+%=============================================================== bentuk caption
+\captionsetup{font=normalsize, labelsep=space}
+\captionsetup[table]{%
+  position=top, justification=raggedright, singlelinecheck=false, skip=5pt}
+\captionsetup[figure]{%
+  position=bottom, justification=centering, singlelinecheck=true, skip=5pt}
+\captionsetup[longtable]{%
+  position=top, justification=raggedright, singlelinecheck=false, skip=5pt}
+
+\renewcommand{\arraystretch}{1.2}
+
+%============================================================= baris sumber
+\newcommand{\sumber}[1]{%
+  \par\vspace{2pt}%
+  {\footnotesize\setstretch{1.0}\raggedright Sumber: #1\par}%
+}
+
+%====================================================== tabel panjang (longtable)
+% Pemakaian:
+%   \begin{tabelpanjang}{cl}{Judul tabel}{tab:label}
+%     \toprule
+%     Kepala1 & Kepala2 \\ \midrule
+%     \endhead
+%     ...                                        \\
+%   \end{tabelpanjang}
+% Catatan: JANGAN memakai \def dengan nama ber-@ di dalam badan environment —
+% nama itu ditafsirkan di dokumen (di mana @ bukan huruf) sehingga menjadi
+% "Use of \unnes doesn't match its definition".
+\newenvironment{tabelpanjang}[3]{%
+  \begin{longtable}{#1}%
+  \caption{#2}\label{#3}\\%
+  \toprule
+}{%
+  \bottomrule
+  \end{longtable}%
+}
+\endinput
